@@ -1,0 +1,341 @@
+{% extends 'base.html' %}
+
+{% block title %}Administrator Control Center | CareerConnect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="card p-4 shadow-sm border mb-4 bg-white">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1 rounded-pill mb-1">
+                    <i class="bi bi-shield-lock-fill me-1"></i>Platform Administration
+                </span>
+                <h3 class="fw-bold text-dark mb-0">CareerConnect Governance & Analytics</h3>
+                <div class="text-muted small">Monitor users, verify companies, audit job postings, and review recruitment trends</div>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="/admin/" target="_blank" class="btn btn-outline-dark btn-sm rounded-pill px-3">
+                    <i class="bi bi-database-gear me-1"></i>Django Admin Panel
+                </a>
+                <a href="/api/v1/stats/" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                    <i class="bi bi-code-slash me-1"></i>Stats API JSON
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-2 col-md-4">
+            <div class="stat-card">
+                <div class="text-muted small fw-semibold">Candidates</div>
+                <div class="fs-3 fw-bold text-dark mt-1">{{ total_candidates }}</div>
+                <div class="small text-success mt-1"><i class="bi bi-person-check me-1"></i>Active</div>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-2 col-md-4">
+            <div class="stat-card">
+                <div class="text-muted small fw-semibold">Employers</div>
+                <div class="fs-3 fw-bold text-primary mt-1">{{ total_employers }}</div>
+                <div class="small text-primary mt-1"><i class="bi bi-building me-1"></i>Recruiters</div>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-2 col-md-4">
+            <div class="stat-card">
+                <div class="text-muted small fw-semibold">Companies</div>
+                <div class="fs-3 fw-bold text-dark mt-1">{{ total_companies }}</div>
+                <div class="small text-info mt-1"><i class="bi bi-patch-check me-1"></i>Partners</div>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-2 col-md-4">
+            <div class="stat-card">
+                <div class="text-muted small fw-semibold">Total Jobs</div>
+                <div class="fs-3 fw-bold text-dark mt-1">{{ total_jobs }}</div>
+                <div class="small text-success mt-1">{{ active_jobs }} Active</div>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-4 col-md-8">
+            <div class="stat-card bg-primary text-white">
+                <div class="text-white-50 small fw-semibold">Total Applications Processed</div>
+                <div class="fs-3 fw-bold text-white mt-1">{{ total_applications }}</div>
+                <div class="small text-white-50 mt-1"><i class="bi bi-graph-up-arrow me-1"></i>Platform-wide candidate throughput</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js Visualizations -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card p-4 shadow-sm border h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-pie-chart-fill text-primary me-2"></i>Application Status Distribution</h5>
+                    <span class="badge bg-light text-muted border">Live Database</span>
+                </div>
+                <div style="height: 260px;" class="d-flex align-items-center justify-content-center">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card p-4 shadow-sm border h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-bar-chart-fill text-success me-2"></i>Job Postings by Employment Type</h5>
+                    <span class="badge bg-light text-muted border">Breakdown</span>
+                </div>
+                <div style="height: 260px;" class="d-flex align-items-center justify-content-center">
+                    <canvas id="jobTypeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Moderation Table -->
+    <div class="card shadow-sm border mb-4">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-shield-check me-2"></i>Job Listings Moderation & Quality Control</h5>
+                <div class="text-muted small">Approve, feature, or remove inappropriate or spam job postings</div>
+            </div>
+            <span class="badge bg-light text-dark border">{{ recent_jobs.count }} Recent Postings</span>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small text-muted text-uppercase">
+                        <tr>
+                            <th class="ps-4">Job Title & Company</th>
+                            <th>Posted By</th>
+                            <th>Location / Salary</th>
+                            <th>Approval Status</th>
+                            <th>Visibility</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for j in recent_jobs %}
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="fw-bold text-dark">
+                                        <a href="{% url 'jobs:job_detail' j.id %}" target="_blank" class="text-dark text-decoration-none">
+                                            {{ j.title }}
+                                        </a>
+                                    </div>
+                                    <div class="text-muted small">{{ j.company.name }} &bull; {{ j.get_employment_type_display }}</div>
+                                </td>
+                                <td class="small">
+                                    {{ j.employer.get_full_name|default:j.employer.username }}
+                                    <div class="text-muted" style="font-size: 0.75rem;">{{ j.employer.email }}</div>
+                                </td>
+                                <td class="small">
+                                    <div>{{ j.location }}</div>
+                                    <div class="text-success fw-semibold">{{ j.formatted_salary }}</div>
+                                </td>
+                                <td>
+                                    {% if j.is_approved %}
+                                        <span class="badge bg-success-subtle text-success">
+                                            <i class="bi bi-check-circle me-1"></i>Approved
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-danger-subtle text-danger">
+                                            <i class="bi bi-x-circle me-1"></i>Unapproved / Flagged
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if j.status == 'ACTIVE' %}
+                                        <span class="badge bg-primary-subtle text-primary">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary-subtle text-secondary">{{ j.status }}</span>
+                                    {% endif %}
+                                    {% if j.is_featured %}
+                                        <span class="badge bg-warning-subtle text-warning ms-1">Featured</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{% url 'jobs:admin_toggle_approval' j.id %}" class="btn btn-outline-secondary" title="Toggle Approval">
+                                            <i class="bi bi-check2-square"></i>
+                                        </a>
+                                        <a href="{% url 'jobs:edit_job' j.id %}" class="btn btn-outline-primary" title="Edit Listing">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="{% url 'jobs:admin_delete_job' j.id %}" class="btn btn-outline-danger" onclick="return confirm('Remove listing {{ j.title }}?');" title="Remove Listing">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users & Partner Companies Overview -->
+    <div class="row g-4">
+        <!-- User Accounts Management -->
+        <div class="col-lg-7">
+            <div class="card shadow-sm border h-100">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-people me-2"></i>Registered Users</h5>
+                    <span class="badge bg-light text-dark border">{{ recent_users.count }} Users</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0 small">
+                            <thead class="table-light text-muted text-uppercase">
+                                <tr>
+                                    <th class="ps-3">User</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th class="text-end pe-3">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for u in recent_users %}
+                                    <tr>
+                                        <td class="ps-3">
+                                            <div class="fw-bold text-dark">{{ u.get_full_name|default:u.username }}</div>
+                                            <div class="text-muted" style="font-size: 0.75rem;">@{{ u.username }} &bull; {{ u.email }}</div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary badge-role">{{ u.get_role_display }}</span>
+                                        </td>
+                                        <td>
+                                            {% if u.is_active %}
+                                                <span class="badge bg-success-subtle text-success">Active</span>
+                                            {% else %}
+                                                <span class="badge bg-danger-subtle text-danger">Suspended</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-end pe-3">
+                                            {% if not u.is_superuser %}
+                                                <a href="{% url 'jobs:admin_toggle_user' u.id %}" class="btn btn-outline-secondary btn-sm py-0 px-2" title="Toggle Active / Suspended">
+                                                    <i class="bi bi-power"></i>
+                                                </a>
+                                            {% else %}
+                                                <span class="badge bg-dark">Superuser</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Companies Management -->
+        <div class="col-lg-5">
+            <div class="card shadow-sm border h-100">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-building me-2"></i>Partner Companies</h5>
+                    <span class="badge bg-light text-dark border">{{ companies.count }} Companies</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for comp in companies %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="company-logo-placeholder me-2" style="width: 38px; height: 38px; font-size: 1rem;">
+                                        {{ comp.name|slice:":1" }}
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark small">{{ comp.name }}</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">{{ comp.industry }} &bull; {{ comp.jobs_count }} Jobs</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <a href="{% url 'jobs:admin_toggle_company' comp.id %}" class="btn btn-sm {% if comp.is_verified %}btn-outline-success{% else %}btn-outline-secondary{% endif %} py-0 px-2" title="Toggle Verified status">
+                                        {% if comp.is_verified %}
+                                            <i class="bi bi-patch-check-fill me-1"></i>Verified
+                                        {% else %}
+                                            Unverified
+                                        {% endif %}
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // 1. Application Status Chart
+    const statusData = JSON.parse('{{ status_counts_json|escapejs }}');
+    const ctxStatus = document.getElementById('statusChart').getContext('2d');
+    new Chart(ctxStatus, {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(statusData),
+            datasets: [{
+                data: Object.values(statusData),
+                backgroundColor: [
+                    '#f59e0b', // Pending
+                    '#06b6d4', // Shortlisted
+                    '#10b981', // Selected
+                    '#ef4444'  // Rejected
+                ],
+                borderWidth: 2,
+                borderColor: '#ffffff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { boxWidth: 12, font: { size: 11 } }
+                }
+            }
+        }
+    });
+
+    // 2. Jobs by Type Chart
+    const typeData = JSON.parse('{{ job_types_json|escapejs }}');
+    const ctxType = document.getElementById('jobTypeChart').getContext('2d');
+    new Chart(ctxType, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(typeData),
+            datasets: [{
+                label: 'Active Postings',
+                data: Object.values(typeData),
+                backgroundColor: '#2563eb',
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0 }
+                }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}
+

@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}Employer Registration | CareerConnect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-sm border-0 p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill mb-2">Employer & Recruiter Portal</span>
+                    <h3 class="fw-bold text-dark">Register Company & Recruiter Account</h3>
+                    <p class="text-muted small">Hire top engineering talent, post jobs, and manage applicant pipelines effortlessly</p>
+                </div>
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <h6 class="fw-bold text-primary border-bottom pb-2 mb-3">
+                        <i class="bi bi-building-fill me-1"></i> Company Details
+                    </h6>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Company / Organization Name *</label>
+                            {{ form.company_name }}
+                            {% if form.company_name.errors %}<div class="text-danger small">{{ form.company_name.errors.0 }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Company Website URL</label>
+                            {{ form.company_website }}
+                            {% if form.company_website.errors %}<div class="text-danger small">{{ form.company_website.errors.0 }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Industry</label>
+                            {{ form.company_industry }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Company Size</label>
+                            {{ form.company_size }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Headquarters Location</label>
+                            {{ form.company_headquarters }}
+                        </div>
+                    </div>
+
+                    <h6 class="fw-bold text-primary border-bottom pb-2 mb-3">
+                        <i class="bi bi-person-badge-fill me-1"></i> Recruiter Account Information
+                    </h6>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">First Name *</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}<div class="text-danger small">{{ form.first_name.errors.0 }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Last Name *</label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}<div class="text-danger small">{{ form.last_name.errors.0 }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Username *</label>
+                            {{ form.username }}
+                            {% if form.username.errors %}<div class="text-danger small">{{ form.username.errors.0 }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Corporate Email Address *</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}<div class="text-danger small">{{ form.email.errors.0 }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Phone Number</label>
+                            {{ form.phone }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Your Designation / Title</label>
+                            {{ form.designation }}
+                            <div class="form-text small">e.g. Talent Acquisition Manager, HR Lead</div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Password *</label>
+                            {{ form.password }}
+                            {% if form.password.errors %}<div class="text-danger small">{{ form.password.errors.0 }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Confirm Password *</label>
+                            {{ form.confirm_password }}
+                            {% if form.confirm_password.errors %}<div class="text-danger small">{{ form.confirm_password.errors.0 }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                        Register Company & Launch Hiring Portal
+                    </button>
+                </form>
+
+                <div class="text-center mt-4 pt-3 border-top">
+                    <p class="small text-muted mb-0">
+                        Already have an account? <a href="{% url 'accounts:login' %}" class="fw-semibold text-primary text-decoration-none">Sign In</a>
+                    </p>
+                    <p class="small text-muted mt-2">
+                        Looking for jobs instead? <a href="{% url 'accounts:register_candidate' %}" class="fw-semibold text-primary text-decoration-none">Register as Candidate</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

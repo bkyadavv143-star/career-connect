@@ -1,0 +1,57 @@
+<footer>
+    <div class="container">
+        <div class="row g-4 mb-4">
+            <div class="col-lg-4 col-md-6">
+                <h5 class="text-white fw-bold d-flex align-items-center mb-3">
+                    <i class="bi bi-briefcase-fill text-primary me-2"></i>CareerConnect
+                </h5>
+                <p class="small text-muted">
+                    CareerConnect is a comprehensive Job Board & Talent Marketplace platform developed as a B.Tech Computer Science and Engineering project.
+                </p>
+                <div class="d-flex gap-2">
+                    <span class="badge bg-dark border text-light"><i class="bi bi-filetype-py me-1"></i>Django 6.1</span>
+                    <span class="badge bg-dark border text-light"><i class="bi bi-cpu me-1"></i>DRF</span>
+                    <span class="badge bg-dark border text-light"><i class="bi bi-bootstrap me-1"></i>Bootstrap 5</span>
+                    <span class="badge bg-dark border text-light"><i class="bi bi-database me-1"></i>SQLite</span>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-3 col-6">
+                <h6 class="text-white fw-semibold mb-3">For Candidates</h6>
+                <ul class="list-unstyled small">
+                    <li class="mb-2"><a href="{% url 'jobs:job_list' %}">Browse All Jobs</a></li>
+                    <li class="mb-2"><a href="{% url 'accounts:register_candidate' %}">Candidate Register</a></li>
+                    <li class="mb-2"><a href="{% url 'accounts:candidate_dashboard' %}">Application Status</a></li>
+                    <li class="mb-2"><a href="{% url 'accounts:candidate_profile' %}">Upload PDF Resume</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-2 col-md-3 col-6">
+                <h6 class="text-white fw-semibold mb-3">For Employers</h6>
+                <ul class="list-unstyled small">
+                    <li class="mb-2"><a href="{% url 'jobs:post_job' %}">Post a Vacancy</a></li>
+                    <li class="mb-2"><a href="{% url 'accounts:register_employer' %}">Employer Register</a></li>
+                    <li class="mb-2"><a href="{% url 'accounts:employer_dashboard' %}">Manage Listings</a></li>
+                    <li class="mb-2"><a href="{% url 'accounts:employer_applicants' %}">Applicant Review</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <h6 class="text-white fw-semibold mb-3">Academic Project Details</h6>
+                <p class="small text-muted mb-2">
+                    <strong>Project:</strong> CAREER CONNECT (Job Board Platform)<br>
+                    <strong>Department:</strong> B.Tech Computer Science & Engineering<br>
+                    <strong>Features:</strong> Role-based Access, PDF Resume Management, Application Tracking, Notification System, RESTful APIs & Chart.js Analytics.
+                </p>
+                <a href="/api/v1/jobs/" class="btn btn-sm btn-outline-secondary text-white rounded-pill" target="_blank">
+                    <i class="bi bi-code-square me-1"></i>Explore REST API Documentation
+                </a>
+            </div>
+        </div>
+
+        <div class="border-top border-secondary pt-3 text-center small text-muted">
+            &copy; 2026 CareerConnect &bull; B.Tech Final Year CSE Capstone Project &bull; Built with Django & Bootstrap 5
+        </div>
+    </div>
+</footer>
+

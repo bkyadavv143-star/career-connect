@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}Company & Recruiter Profile | CareerConnect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row g-4">
+        <!-- Sidebar Navigation -->
+        <div class="col-lg-3">
+            <div class="card p-3 shadow-sm border-0 mb-3">
+                <div class="text-center py-3">
+                    <div class="company-logo-placeholder mx-auto mb-2" style="width: 60px; height: 60px; font-size: 1.5rem;">
+                        {{ company.name|slice:":1"|default:"C" }}
+                    </div>
+                    <h5 class="fw-bold mb-0">{{ company.name|default:"Company" }}</h5>
+                    <div class="text-muted small">{{ emp_profile.designation|default:"Recruiter" }}</div>
+                    {% if company.is_verified %}
+                        <span class="badge bg-success-subtle text-success badge-role mt-2">
+                            <i class="bi bi-patch-check-fill me-1"></i>Verified Employer
+                        </span>
+                    {% endif %}
+                </div>
+
+                <hr class="my-2">
+
+                <div class="nav flex-column nav-pills mt-2">
+                    <a href="{% url 'accounts:employer_dashboard' %}" class="sidebar-link">
+                        <i class="bi bi-columns-gap"></i>Dashboard Overview
+                    </a>
+                    <a href="{% url 'jobs:post_job' %}" class="sidebar-link">
+                        <i class="bi bi-plus-circle"></i>Post New Job
+                    </a>
+                    <a href="{% url 'accounts:employer_applicants' %}" class="sidebar-link">
+                        <i class="bi bi-people"></i>Manage Applicants
+                    </a>
+                    <a href="{% url 'accounts:employer_profile' %}" class="sidebar-link active">
+                        <i class="bi bi-building"></i>Company Profile
+                    </a>
+                    <a href="{% url 'notifications:list' %}" class="sidebar-link">
+                        <i class="bi bi-bell"></i>Notifications
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Form -->
+        <div class="col-lg-9">
+            <div class="card shadow-sm border-0 p-4">
+                <div class="border-bottom pb-3 mb-4">
+                    <h4 class="fw-bold mb-0">Company & Recruiter Settings</h4>
+                    <div class="text-muted small">Update your company brand, presence, and recruiter profile</div>
+                </div>
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <h6 class="fw-bold text-primary mb-3"><i class="bi bi-building me-1"></i>Company Information</h6>
+                    {% if comp_form %}
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Company Name</label>
+                                {{ comp_form.name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Website URL</label>
+                                {{ comp_form.website }}
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Industry</label>
+                                {{ comp_form.industry }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Company Size</label>
+                                {{ comp_form.company_size }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Headquarters</label>
+                                {{ comp_form.headquarters }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold">Logo Image URL</label>
+                            {{ comp_form.logo_url }}
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label small fw-semibold">Company Description & Mission</label>
+                            {{ comp_form.description }}
+                        </div>
+                    {% endif %}
+
+                    <h6 class="fw-bold text-primary mb-3"><i class="bi bi-person-badge me-1"></i>Recruiter Contact Info</h6>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">First Name</label>
+                            <input type="text" name="first_name" class="form-control" value="{{ request.user.first_name }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Last Name</label>
+                            <input type="text" name="last_name" class="form-control" value="{{ request.user.last_name }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Designation</label>
+                            <input type="text" name="designation" class="form-control" value="{{ emp_profile.designation }}">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Corporate Email (Read-only)</label>
+                            <input type="email" class="form-control" value="{{ request.user.email }}" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Phone Number</label>
+                            <input type="text" name="phone" class="form-control" value="{{ request.user.phone|default:'' }}">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'accounts:employer_dashboard' %}" class="btn btn-light px-4">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                            <i class="bi bi-check2-circle me-1"></i>Save Company Profile
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
