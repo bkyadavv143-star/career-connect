@@ -5,14 +5,15 @@
 {% block content %}
 <div class="container py-4">
     <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="card p-4 p-md-5 border-0 shadow-sm">
-                <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+        <div class="col-lg-10 col-xl-9">
+            <div class="card p-4 p-md-5 border shadow-sm bg-white">
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4 flex-wrap gap-2">
                     <div>
+                        <span class="badge bg-primary-soft text-primary mb-1">VACANCY MANAGEMENT</span>
                         <h3 class="fw-bold text-dark mb-1">{{ title }}</h3>
-                        <p class="text-muted small mb-0">Fill in the details below to publish your opening to verified candidates</p>
+                        <p class="text-muted small mb-0">Fill in the fields below to publish your opening to verified engineering candidates</p>
                     </div>
-                    <a href="{% url 'accounts:employer_dashboard' %}" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                    <a href="{% url 'accounts:employer_dashboard' %}" class="btn btn-outline-secondary btn-sm btn-pill px-3">
                         <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
                     </a>
                 </div>
@@ -20,102 +21,124 @@
                 <form method="post" novalidate>
                     {% csrf_token %}
 
-                    <h6 class="fw-bold text-primary mb-3"><i class="bi bi-briefcase me-1"></i>Role Details</h6>
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold">Job Title *</label>
-                        {{ form.title }}
-                        {% if form.title.errors %}<div class="text-danger small">{{ form.title.errors.0 }}</div>{% endif %}
-                    </div>
+                    <!-- Section 1: Role Overview -->
+                    <div class="p-4 bg-light rounded-3 border mb-4">
+                        <h6 class="fw-bold text-primary mb-3 d-flex align-items-center">
+                            <i class="bi bi-briefcase-fill me-2"></i>1. Position Overview & Location
+                        </h6>
 
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Employment Type</label>
-                            {{ form.employment_type }}
+                        <div class="mb-3">
+                            <label class="form-label">Job Title *</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}<div class="text-danger small mt-1">{{ form.title.errors.0 }}</div>{% endif %}
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Required Experience Level</label>
-                            {{ form.experience_level }}
-                        </div>
-                    </div>
 
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-8">
-                            <label class="form-label small fw-semibold">Job Location</label>
-                            {{ form.location }}
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Employment Type *</label>
+                                {{ form.employment_type }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Experience Requirement *</label>
+                                {{ form.experience_level }}
+                            </div>
                         </div>
-                        <div class="col-md-4 d-flex align-items-end">
-                            <div class="form-check mb-2">
-                                {{ form.is_remote }}
-                                <label class="form-check-label small fw-semibold" for="{{ form.is_remote.id_for_label }}">
-                                    Remote Eligible Position
-                                </label>
+
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label">Job Location *</label>
+                                {{ form.location }}
+                                <div class="form-text small">e.g. Bengaluru, Karnataka or Hybrid</div>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <div class="form-check p-2 bg-white rounded border w-100">
+                                    {{ form.is_remote }}
+                                    <label class="form-check-label small fw-bold text-dark ms-2" for="{{ form.is_remote.id_for_label }}">
+                                        <i class="bi bi-laptop text-primary me-1"></i>Remote Eligible
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="form-label small fw-semibold">Required Technical Skills (Comma-separated) *</label>
-                        {{ form.required_skills }}
-                        {% if form.required_skills.errors %}<div class="text-danger small">{{ form.required_skills.errors.0 }}</div>{% endif %}
-                        <div class="form-text small">Example: Python, Django, PostgreSQL, Docker, AWS, React</div>
-                    </div>
+                    <!-- Section 2: Technical Skills & Description -->
+                    <div class="p-4 bg-light rounded-3 border mb-4">
+                        <h6 class="fw-bold text-primary mb-3 d-flex align-items-center">
+                            <i class="bi bi-code-slash me-2"></i>2. Required Skills & Responsibilities
+                        </h6>
 
-                    <h6 class="fw-bold text-primary mb-3"><i class="bi bi-file-text me-1"></i>Job Description & Responsibilities</h6>
-                    <div class="mb-4">
-                        {{ form.description }}
-                        {% if form.description.errors %}<div class="text-danger small">{{ form.description.errors.0 }}</div>{% endif %}
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label">Required Technical Skills (Comma-separated) *</label>
+                            {{ form.required_skills }}
+                            {% if form.required_skills.errors %}<div class="text-danger small mt-1">{{ form.required_skills.errors.0 }}</div>{% endif %}
+                            <div class="form-text small">Example: Python, Django, PostgreSQL, Docker, AWS, React, REST APIs</div>
+                        </div>
 
-                    <h6 class="fw-bold text-primary mb-3"><i class="bi bi-cash-stack me-1"></i>Compensation & Vacancies</h6>
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-4">
-                            <label class="form-label small fw-semibold">Minimum Salary (INR / yr)</label>
-                            {{ form.min_salary }}
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label small fw-semibold">Maximum Salary (INR / yr)</label>
-                            {{ form.max_salary }}
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label small fw-semibold">Number of Vacancies</label>
-                            {{ form.vacancies }}
+                        <div class="mb-0">
+                            <label class="form-label">Comprehensive Job Description & Expectations *</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}<div class="text-danger small mt-1">{{ form.description.errors.0 }}</div>{% endif %}
+                            <div class="form-text small">Detail responsibilities, project scope, qualifications, and work culture.</div>
                         </div>
                     </div>
 
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Application Deadline</label>
-                            {{ form.deadline }}
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Listing Status</label>
-                            {{ form.status }}
-                        </div>
-                    </div>
+                    <!-- Section 3: Compensation & Lifecycle -->
+                    <div class="p-4 bg-light rounded-3 border mb-4">
+                        <h6 class="fw-bold text-primary mb-3 d-flex align-items-center">
+                            <i class="bi bi-cash-stack me-2"></i>3. Compensation, Vacancies & Timeline
+                        </h6>
 
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <div class="form-check">
-                                {{ form.salary_negotiable }}
-                                <label class="form-check-label small" for="{{ form.salary_negotiable.id_for_label }}">
-                                    Salary is negotiable based on candidate experience
-                                </label>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Min Annual Salary (INR)</label>
+                                {{ form.min_salary }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Max Annual Salary (INR)</label>
+                                {{ form.max_salary }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Vacancies Count</label>
+                                {{ form.vacancies }}
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-check">
-                                {{ form.is_featured }}
-                                <label class="form-check-label small fw-semibold" for="{{ form.is_featured.id_for_label }}">
-                                    Highlight as Featured Listing on Homepage
-                                </label>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Application Deadline</label>
+                                {{ form.deadline }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Listing Status</label>
+                                {{ form.status }}
+                            </div>
+                        </div>
+
+                        <div class="row g-3 pt-2">
+                            <div class="col-md-6">
+                                <div class="form-check p-2 bg-white rounded border">
+                                    {{ form.salary_negotiable }}
+                                    <label class="form-check-label small fw-semibold text-dark ms-2" for="{{ form.salary_negotiable.id_for_label }}">
+                                        Salary negotiable based on experience
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check p-2 bg-white rounded border">
+                                    {{ form.is_featured }}
+                                    <label class="form-check-label small fw-semibold text-dark ms-2" for="{{ form.is_featured.id_for_label }}">
+                                        Feature on homepage curated list
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-end gap-2 pt-3 border-top">
-                        <a href="{% url 'accounts:employer_dashboard' %}" class="btn btn-light px-4">Cancel</a>
-                        <button type="submit" class="btn btn-primary px-4 fw-semibold">
-                            <i class="bi bi-check-lg me-1"></i>Save & Publish Job Vacancy
+                    <!-- Form Buttons -->
+                    <div class="d-flex justify-content-end gap-2 pt-2">
+                        <a href="{% url 'accounts:employer_dashboard' %}" class="btn btn-light btn-pill px-4">Cancel</a>
+                        <button type="submit" class="btn btn-primary btn-pill px-4 fw-bold shadow-sm">
+                            <i class="bi bi-check-lg me-1"></i>Publish Job Vacancy
                         </button>
                     </div>
                 </form>
@@ -124,4 +147,3 @@
     </div>
 </div>
 {% endblock %}
-

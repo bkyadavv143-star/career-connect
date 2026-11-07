@@ -1,79 +1,101 @@
 {% extends 'base.html' %}
 
-{% block title %}Administrator Control Center | CareerConnect{% endblock %}
+{% block title %}Administrator Governance Center | CareerConnect{% endblock %}
 
 {% block content %}
 <div class="container py-4">
-    <!-- Header -->
+    <!-- Header Banner -->
     <div class="card p-4 shadow-sm border mb-4 bg-white">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
                 <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1 rounded-pill mb-1">
-                    <i class="bi bi-shield-lock-fill me-1"></i>Platform Administration
+                    <i class="bi bi-shield-lock-fill me-1"></i>SYSTEM GOVERNANCE
                 </span>
-                <h3 class="fw-bold text-dark mb-0">CareerConnect Governance & Analytics</h3>
-                <div class="text-muted small">Monitor users, verify companies, audit job postings, and review recruitment trends</div>
+                <h3 class="fw-bold text-dark mb-0">Platform Administration & Analytics</h3>
+                <div class="text-muted small">Monitor platform throughput, audit job postings, verify enterprise accounts, and manage users.</div>
             </div>
             <div class="d-flex gap-2">
-                <a href="/admin/" target="_blank" class="btn btn-outline-dark btn-sm rounded-pill px-3">
+                <a href="/admin/" target="_blank" class="btn btn-dark btn-sm btn-pill px-3 shadow-sm">
                     <i class="bi bi-database-gear me-1"></i>Django Admin Panel
                 </a>
-                <a href="/api/v1/stats/" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill px-3">
-                    <i class="bi bi-code-slash me-1"></i>Stats API JSON
+                <a href="/api/v1/stats/" target="_blank" class="btn btn-outline-primary btn-sm btn-pill px-3">
+                    <i class="bi bi-code-slash me-1"></i>REST Stats JSON
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- Stats Grid -->
+    <!-- 5 KPI Stat Cards -->
     <div class="row g-3 mb-4">
         <div class="col-6 col-lg-2 col-md-4">
-            <div class="stat-card">
-                <div class="text-muted small fw-semibold">Candidates</div>
-                <div class="fs-3 fw-bold text-dark mt-1">{{ total_candidates }}</div>
-                <div class="small text-success mt-1"><i class="bi bi-person-check me-1"></i>Active</div>
+            <div class="stat-widget">
+                <div>
+                    <div class="stat-widget-val text-dark">{{ total_candidates }}</div>
+                    <div class="stat-widget-label">Candidates</div>
+                </div>
+                <div class="stat-widget-icon bg-success-subtle text-success">
+                    <i class="bi bi-person-check-fill"></i>
+                </div>
             </div>
         </div>
 
         <div class="col-6 col-lg-2 col-md-4">
-            <div class="stat-card">
-                <div class="text-muted small fw-semibold">Employers</div>
-                <div class="fs-3 fw-bold text-primary mt-1">{{ total_employers }}</div>
-                <div class="small text-primary mt-1"><i class="bi bi-building me-1"></i>Recruiters</div>
+            <div class="stat-widget">
+                <div>
+                    <div class="stat-widget-val text-primary">{{ total_employers }}</div>
+                    <div class="stat-widget-label">Recruiters</div>
+                </div>
+                <div class="stat-widget-icon bg-primary-subtle text-primary">
+                    <i class="bi bi-building"></i>
+                </div>
             </div>
         </div>
 
         <div class="col-6 col-lg-2 col-md-4">
-            <div class="stat-card">
-                <div class="text-muted small fw-semibold">Companies</div>
-                <div class="fs-3 fw-bold text-dark mt-1">{{ total_companies }}</div>
-                <div class="small text-info mt-1"><i class="bi bi-patch-check me-1"></i>Partners</div>
+            <div class="stat-widget">
+                <div>
+                    <div class="stat-widget-val text-info">{{ total_companies }}</div>
+                    <div class="stat-widget-label">Enterprises</div>
+                </div>
+                <div class="stat-widget-icon bg-info-subtle text-info">
+                    <i class="bi bi-patch-check-fill"></i>
+                </div>
             </div>
         </div>
 
         <div class="col-6 col-lg-2 col-md-4">
-            <div class="stat-card">
-                <div class="text-muted small fw-semibold">Total Jobs</div>
-                <div class="fs-3 fw-bold text-dark mt-1">{{ total_jobs }}</div>
-                <div class="small text-success mt-1">{{ active_jobs }} Active</div>
+            <div class="stat-widget">
+                <div>
+                    <div class="stat-widget-val text-dark">{{ total_jobs }}</div>
+                    <div class="stat-widget-label">Total Jobs</div>
+                </div>
+                <div class="stat-widget-icon bg-secondary-subtle text-secondary">
+                    <i class="bi bi-briefcase-fill"></i>
+                </div>
             </div>
         </div>
 
-        <div class="col-6 col-lg-4 col-md-8">
-            <div class="stat-card bg-primary text-white">
-                <div class="text-white-50 small fw-semibold">Total Applications Processed</div>
-                <div class="fs-3 fw-bold text-white mt-1">{{ total_applications }}</div>
-                <div class="small text-white-50 mt-1"><i class="bi bi-graph-up-arrow me-1"></i>Platform-wide candidate throughput</div>
+        <div class="col-12 col-lg-4 col-md-8">
+            <div class="stat-widget text-white" style="background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);">
+                <div>
+                    <div class="stat-widget-val text-white">{{ total_applications }}</div>
+                    <div class="text-white-50 small fw-bold">Platform-wide Applications Processed</div>
+                </div>
+                <div class="stat-widget-icon bg-white text-primary">
+                    <i class="bi bi-graph-up-arrow"></i>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Chart.js Visualizations -->
+    <!-- Chart.js Visualizations Row -->
     <div class="row g-4 mb-4">
         <div class="col-lg-6">
-            <div class="card p-4 shadow-sm border h-100">
+            <div class="card p-4 shadow-sm border h-100 bg-white">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-pie-chart-fill text-primary me-2"></i>Application Status Distribution</h5>
+                    <h6 class="fw-bold text-dark mb-0 d-flex align-items-center">
+                        <i class="bi bi-pie-chart-fill text-primary me-2"></i>Application Status Distribution
+                    </h6>
                     <span class="badge bg-light text-muted border">Live Database</span>
                 </div>
                 <div style="height: 260px;" class="d-flex align-items-center justify-content-center">
@@ -83,10 +105,12 @@
         </div>
 
         <div class="col-lg-6">
-            <div class="card p-4 shadow-sm border h-100">
+            <div class="card p-4 shadow-sm border h-100 bg-white">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-bar-chart-fill text-success me-2"></i>Job Postings by Employment Type</h5>
-                    <span class="badge bg-light text-muted border">Breakdown</span>
+                    <h6 class="fw-bold text-dark mb-0 d-flex align-items-center">
+                        <i class="bi bi-bar-chart-fill text-success me-2"></i>Job Postings by Employment Type
+                    </h6>
+                    <span class="badge bg-light text-muted border">Categorization</span>
                 </div>
                 <div style="height: 260px;" class="d-flex align-items-center justify-content-center">
                     <canvas id="jobTypeChart"></canvas>
@@ -96,25 +120,27 @@
     </div>
 
     <!-- Job Moderation Table -->
-    <div class="card shadow-sm border mb-4">
+    <div class="card shadow-sm border mb-4 bg-white">
         <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
             <div>
-                <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-shield-check me-2"></i>Job Listings Moderation & Quality Control</h5>
+                <h5 class="fw-bold mb-0 text-dark d-flex align-items-center">
+                    <i class="bi bi-shield-check text-primary me-2"></i>Job Listings Moderation & Quality Control
+                </h5>
                 <div class="text-muted small">Approve, feature, or remove inappropriate or spam job postings</div>
             </div>
-            <span class="badge bg-light text-dark border">{{ recent_jobs.count }} Recent Postings</span>
+            <span class="badge bg-light text-secondary border">{{ recent_jobs.count }} Recent Postings</span>
         </div>
 
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light small text-muted text-uppercase">
+                    <thead>
                         <tr>
                             <th class="ps-4">Job Title & Company</th>
                             <th>Posted By</th>
                             <th>Location / Salary</th>
                             <th>Approval Status</th>
-                            <th>Visibility</th>
+                            <th>Listing Status</th>
                             <th class="text-end pe-4">Actions</th>
                         </tr>
                     </thead>
@@ -130,12 +156,12 @@
                                     <div class="text-muted small">{{ j.company.name }} &bull; {{ j.get_employment_type_display }}</div>
                                 </td>
                                 <td class="small">
-                                    {{ j.employer.get_full_name|default:j.employer.username }}
+                                    <div class="fw-semibold text-dark">{{ j.employer.get_full_name|default:j.employer.username }}</div>
                                     <div class="text-muted" style="font-size: 0.75rem;">{{ j.employer.email }}</div>
                                 </td>
                                 <td class="small">
                                     <div>{{ j.location }}</div>
-                                    <div class="text-success fw-semibold">{{ j.formatted_salary }}</div>
+                                    <div class="text-success fw-bold">{{ j.formatted_salary }}</div>
                                 </td>
                                 <td>
                                     {% if j.is_approved %}
@@ -144,13 +170,13 @@
                                         </span>
                                     {% else %}
                                         <span class="badge bg-danger-subtle text-danger">
-                                            <i class="bi bi-x-circle me-1"></i>Unapproved / Flagged
+                                            <i class="bi bi-x-circle me-1"></i>Unapproved
                                         </span>
                                     {% endif %}
                                 </td>
                                 <td>
                                     {% if j.status == 'ACTIVE' %}
-                                        <span class="badge bg-primary-subtle text-primary">Active</span>
+                                        <span class="badge bg-primary-soft text-primary">Active</span>
                                     {% else %}
                                         <span class="badge bg-secondary-subtle text-secondary">{{ j.status }}</span>
                                     {% endif %}
@@ -160,13 +186,13 @@
                                 </td>
                                 <td class="text-end pe-4">
                                     <div class="btn-group btn-group-sm">
-                                        <a href="{% url 'jobs:admin_toggle_approval' j.id %}" class="btn btn-outline-secondary" title="Toggle Approval">
+                                        <a href="{% url 'jobs:admin_toggle_approval' j.id %}" class="btn btn-outline-secondary" title="Toggle Approval Status">
                                             <i class="bi bi-check2-square"></i>
                                         </a>
-                                        <a href="{% url 'jobs:edit_job' j.id %}" class="btn btn-outline-primary" title="Edit Listing">
+                                        <a href="{% url 'jobs:edit_job' j.id %}" class="btn btn-outline-primary" title="Edit Opening">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <a href="{% url 'jobs:admin_delete_job' j.id %}" class="btn btn-outline-danger" onclick="return confirm('Remove listing {{ j.title }}?');" title="Remove Listing">
+                                        <a href="{% url 'jobs:admin_delete_job' j.id %}" class="btn btn-outline-danger" onclick="return confirm('Remove listing {{ j.title }}?');" title="Delete Listing">
                                             <i class="bi bi-trash"></i>
                                         </a>
                                     </div>
@@ -183,15 +209,17 @@
     <div class="row g-4">
         <!-- User Accounts Management -->
         <div class="col-lg-7">
-            <div class="card shadow-sm border h-100">
+            <div class="card shadow-sm border h-100 bg-white">
                 <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
-                    <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-people me-2"></i>Registered Users</h5>
-                    <span class="badge bg-light text-dark border">{{ recent_users.count }} Users</span>
+                    <h6 class="fw-bold mb-0 text-dark d-flex align-items-center">
+                        <i class="bi bi-people-fill text-primary me-2"></i>Registered User Accounts
+                    </h6>
+                    <span class="badge bg-light text-secondary border">{{ recent_users.count }} Users</span>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0 small">
-                            <thead class="table-light text-muted text-uppercase">
+                            <thead>
                                 <tr>
                                     <th class="ps-3">User</th>
                                     <th>Role</th>
@@ -218,7 +246,7 @@
                                         </td>
                                         <td class="text-end pe-3">
                                             {% if not u.is_superuser %}
-                                                <a href="{% url 'jobs:admin_toggle_user' u.id %}" class="btn btn-outline-secondary btn-sm py-0 px-2" title="Toggle Active / Suspended">
+                                                <a href="{% url 'jobs:admin_toggle_user' u.id %}" class="btn btn-outline-secondary btn-sm py-0 px-2 btn-pill" title="Toggle Active / Suspended">
                                                     <i class="bi bi-power"></i>
                                                 </a>
                                             {% else %}
@@ -236,17 +264,19 @@
 
         <!-- Companies Management -->
         <div class="col-lg-5">
-            <div class="card shadow-sm border h-100">
+            <div class="card shadow-sm border h-100 bg-white">
                 <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
-                    <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-building me-2"></i>Partner Companies</h5>
-                    <span class="badge bg-light text-dark border">{{ companies.count }} Companies</span>
+                    <h6 class="fw-bold mb-0 text-dark d-flex align-items-center">
+                        <i class="bi bi-building-fill text-info me-2"></i>Enterprise Partners
+                    </h6>
+                    <span class="badge bg-light text-secondary border">{{ companies.count }} Companies</span>
                 </div>
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
                         {% for comp in companies %}
                             <div class="list-group-item d-flex justify-content-between align-items-center py-3">
-                                <div class="d-flex align-items-center">
-                                    <div class="company-logo-placeholder me-2" style="width: 38px; height: 38px; font-size: 1rem;">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="company-avatar sm">
                                         {{ comp.name|slice:":1" }}
                                     </div>
                                     <div>
@@ -255,7 +285,7 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <a href="{% url 'jobs:admin_toggle_company' comp.id %}" class="btn btn-sm {% if comp.is_verified %}btn-outline-success{% else %}btn-outline-secondary{% endif %} py-0 px-2" title="Toggle Verified status">
+                                    <a href="{% url 'jobs:admin_toggle_company' comp.id %}" class="btn btn-sm {% if comp.is_verified %}btn-outline-success{% else %}btn-outline-secondary{% endif %} py-0 px-2 btn-pill" title="Toggle Verified status">
                                         {% if comp.is_verified %}
                                             <i class="bi bi-patch-check-fill me-1"></i>Verified
                                         {% else %}
@@ -276,7 +306,7 @@
 {% block extra_scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // 1. Application Status Chart
+    // 1. Application Status Chart (Doughnut)
     const statusData = JSON.parse('{{ status_counts_json|escapejs }}');
     const ctxStatus = document.getElementById('statusChart').getContext('2d');
     new Chart(ctxStatus, {
@@ -287,7 +317,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 data: Object.values(statusData),
                 backgroundColor: [
                     '#f59e0b', // Pending
-                    '#06b6d4', // Shortlisted
+                    '#0284c7', // Shortlisted
                     '#10b981', // Selected
                     '#ef4444'  // Rejected
                 ],
@@ -301,13 +331,13 @@ document.addEventListener('DOMContentLoaded', function () {
             plugins: {
                 legend: {
                     position: 'bottom',
-                    labels: { boxWidth: 12, font: { size: 11 } }
+                    labels: { boxWidth: 12, font: { size: 11, family: 'Plus Jakarta Sans' } }
                 }
             }
         }
     });
 
-    // 2. Jobs by Type Chart
+    // 2. Jobs by Type Chart (Bar)
     const typeData = JSON.parse('{{ job_types_json|escapejs }}');
     const ctxType = document.getElementById('jobTypeChart').getContext('2d');
     new Chart(ctxType, {
@@ -318,6 +348,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 label: 'Active Postings',
                 data: Object.values(typeData),
                 backgroundColor: '#2563eb',
+                hoverBackgroundColor: '#1d4ed8',
                 borderRadius: 6
             }]
         },
@@ -338,4 +369,3 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 {% endblock %}
-

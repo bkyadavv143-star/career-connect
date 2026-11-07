@@ -1,80 +1,88 @@
-<nav class="navbar navbar-expand-lg sticky-top shadow-sm">
+<nav class="navbar navbar-expand-lg sticky-top cc-navbar">
     <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="{% url 'jobs:home' %}">
-            <div class="bg-primary text-white rounded p-1 me-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
-                <i class="bi bi-briefcase-fill fs-6"></i>
+        <!-- Logo Branding -->
+        <a class="navbar-brand cc-brand" href="{% url 'jobs:home' %}">
+            <div class="cc-brand-icon">
+                <i class="bi bi-briefcase-fill"></i>
             </div>
             <span>Career</span>Connect
         </a>
 
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+        <!-- Mobile Toggler -->
+        <button class="navbar-toggler border-0 shadow-none p-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-list fs-1 text-dark"></i>
         </button>
 
+        <!-- Navbar Menu -->
         <div class="collapse navbar-collapse" id="navbarMain">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3 gap-1">
                 <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'jobs:home' %}">Home</a>
+                    <a class="nav-link cc-nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'jobs:home' %}">
+                        <i class="bi bi-house-door me-1 d-lg-none"></i>Home
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'job_list' %}active{% endif %}" href="{% url 'jobs:job_list' %}">Explore Jobs</a>
+                    <a class="nav-link cc-nav-link {% if request.resolver_match.url_name == 'job_list' %}active{% endif %}" href="{% url 'jobs:job_list' %}">
+                        <i class="bi bi-compass me-1 d-lg-none"></i>Explore Jobs
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/api/v1/jobs/" target="_blank">
-                        <i class="bi bi-code-slash me-1"></i>REST API
+                    <a class="nav-link cc-nav-link" href="/api/v1/jobs/" target="_blank">
+                        <i class="bi bi-code-slash me-1 text-primary"></i>REST API
                     </a>
                 </li>
             </ul>
 
-            <div class="d-flex align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
                 {% if request.user.is_authenticated %}
-                    <!-- Role-specific dashboard button -->
+                    <!-- Role-specific Dashboard shortcut -->
                     {% if request.user.is_platform_admin %}
-                        <a href="{% url 'accounts:admin_dashboard' %}" class="btn btn-outline-danger btn-sm rounded-pill px-3">
-                            <i class="bi bi-speedometer2 me-1"></i>Admin Dashboard
+                        <a href="{% url 'accounts:admin_dashboard' %}" class="btn btn-sm btn-outline-danger btn-pill px-3">
+                            <i class="bi bi-shield-check"></i>Admin Center
                         </a>
                     {% elif request.user.is_employer %}
-                        <a href="{% url 'accounts:employer_dashboard' %}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
-                            <i class="bi bi-grid-fill me-1"></i>Employer Dashboard
+                        <a href="{% url 'jobs:post_job' %}" class="btn btn-sm btn-primary btn-pill px-3 shadow-sm">
+                            <i class="bi bi-plus-lg"></i>Post Vacancy
                         </a>
-                        <a href="{% url 'jobs:post_job' %}" class="btn btn-primary btn-sm rounded-pill px-3">
-                            <i class="bi bi-plus-circle me-1"></i>Post Job
+                        <a href="{% url 'accounts:employer_dashboard' %}" class="btn btn-sm btn-light btn-pill px-3">
+                            <i class="bi bi-kanban"></i>Employer Portal
                         </a>
                     {% else %}
-                        <a href="{% url 'accounts:candidate_dashboard' %}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
-                            <i class="bi bi-person-lines-fill me-1"></i>Candidate Dashboard
+                        <a href="{% url 'accounts:candidate_dashboard' %}" class="btn btn-sm btn-primary btn-pill px-3 shadow-sm">
+                            <i class="bi bi-grid"></i>My Dashboard
                         </a>
                     {% endif %}
 
                     <!-- Notifications Dropdown -->
                     <div class="dropdown">
-                        <a class="btn btn-light rounded-circle position-relative p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="width: 40px; height: 40px;">
-                            <i class="bi bi-bell text-secondary fs-5"></i>
+                        <button class="btn btn-light rounded-circle p-0 position-relative shadow-xs" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="width: 38px; height: 38px;" aria-label="Notifications">
+                            <i class="bi bi-bell text-secondary fs-6"></i>
                             {% if unread_notifications_count > 0 %}
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-white" style="font-size: 0.65rem; padding: 0.25em 0.5em;">
                                     {{ unread_notifications_count }}
-                                    <span class="visually-hidden">unread messages</span>
                                 </span>
                             {% endif %}
-                        </a>
+                        </button>
 
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2" style="width: 320px; max-height: 400px; overflow-y: auto;">
-                            <li class="d-flex justify-content-between align-items-center px-2 py-1 border-bottom mb-2">
-                                <span class="fw-bold small">Notifications</span>
+                        <ul class="dropdown-menu dropdown-menu-end border-0 p-2 shadow-lg rounded-4 mt-2" style="width: 330px; max-height: 420px; overflow-y: auto;">
+                            <li class="d-flex justify-content-between align-items-center px-2 py-2 border-bottom mb-2">
+                                <span class="fw-bold text-dark small"><i class="bi bi-bell-fill text-primary me-1"></i>Notifications</span>
                                 {% if unread_notifications_count > 0 %}
-                                    <a href="{% url 'notifications:mark_all_read' %}" class="small text-decoration-none text-primary">Mark all read</a>
+                                    <a href="{% url 'notifications:mark_all_read' %}" class="small text-primary text-decoration-none fw-semibold" style="font-size: 0.75rem;">Mark all read</a>
                                 {% endif %}
                             </li>
 
                             {% if recent_notifications %}
                                 {% for notif in recent_notifications %}
                                     <li>
-                                        <a class="dropdown-item rounded p-2 mb-1 {% if not notif.is_read %}bg-light fw-semibold{% endif %}" href="javascript:void(0)" onclick="markNotificationRead({{ notif.id }}, '{{ notif.target_url|default:'' }}')">
-                                            <div class="d-flex align-items-start">
-                                                <i class="bi bi-info-circle-fill text-primary me-2 mt-1"></i>
-                                                <div class="flex-grow-1">
-                                                    <div class="small text-dark">{{ notif.title }}</div>
-                                                    <div class="text-muted text-truncate" style="font-size: 0.75rem; max-width: 230px;">{{ notif.message }}</div>
+                                        <a class="dropdown-item rounded-3 p-2 mb-1 {% if not notif.is_read %}bg-light fw-semibold{% endif %}" href="javascript:void(0)" onclick="markNotificationRead({{ notif.id }}, '{{ notif.target_url|default:'' }}')">
+                                            <div class="d-flex align-items-start gap-2">
+                                                <div class="rounded-circle p-1 d-flex align-items-center justify-content-center flex-shrink-0 mt-1 {% if not notif.is_read %}bg-primary text-white{% else %}bg-secondary-subtle text-secondary{% endif %}" style="width: 24px; height: 24px; font-size: 0.7rem;">
+                                                    <i class="bi bi-info-circle-fill"></i>
+                                                </div>
+                                                <div class="flex-grow-1 overflow-hidden">
+                                                    <div class="small text-dark text-truncate">{{ notif.title }}</div>
+                                                    <div class="text-muted text-truncate" style="font-size: 0.75rem;">{{ notif.message }}</div>
                                                     <div class="text-secondary" style="font-size: 0.7rem;">{{ notif.created_at|timesince }} ago</div>
                                                 </div>
                                             </div>
@@ -82,63 +90,73 @@
                                     </li>
                                 {% endfor %}
                             {% else %}
-                                <li class="text-center py-3 text-muted small">No notifications yet</li>
+                                <li class="text-center py-4 text-muted small">
+                                    <i class="bi bi-bell-slash text-muted fs-4 d-block mb-1"></i>
+                                    No new notifications
+                                </li>
                             {% endif %}
-                            <li class="border-top mt-2 pt-1 text-center">
-                                <a href="{% url 'notifications:list' %}" class="small text-primary text-decoration-none">View all notifications</a>
+                            <li class="border-top mt-2 pt-2 text-center">
+                                <a href="{% url 'notifications:list' %}" class="small text-primary text-decoration-none fw-semibold">
+                                    View all notifications <i class="bi bi-arrow-right"></i>
+                                </a>
                             </li>
                         </ul>
                     </div>
 
                     <!-- User Profile Dropdown -->
                     <div class="dropdown">
-                        <button class="btn btn-light rounded-pill dropdown-toggle d-flex align-items-center py-1 px-3 border" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle fs-5 me-2 text-primary"></i>
-                            <span class="fw-semibold small me-1">{{ request.user.first_name|default:request.user.username }}</span>
+                        <button class="btn btn-light rounded-pill dropdown-toggle d-flex align-items-center py-1 px-3 border shadow-xs" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2 fw-bold" style="width: 28px; height: 28px; font-size: 0.75rem;">
+                                {{ request.user.username|slice:":1"|upper }}
+                            </div>
+                            <span class="fw-bold small text-dark me-1">{{ request.user.first_name|default:request.user.username }}</span>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2 mt-2" style="min-width: 220px;">
+                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-2 mt-2 rounded-4" style="min-width: 240px;">
                             <li class="px-3 py-2 border-bottom mb-1">
                                 <div class="fw-bold text-dark">{{ request.user.get_full_name|default:request.user.username }}</div>
-                                <div class="text-muted small text-truncate">{{ request.user.email }}</div>
+                                <div class="text-muted small text-truncate" style="font-size: 0.75rem;">{{ request.user.email }}</div>
                                 <span class="badge bg-secondary badge-role mt-1">{{ request.user.get_role_display }}</span>
                             </li>
                             {% if request.user.is_candidate %}
-                                <li><a class="dropdown-item rounded py-2" href="{% url 'accounts:candidate_dashboard' %}"><i class="bi bi-columns-gap me-2"></i>My Dashboard</a></li>
-                                <li><a class="dropdown-item rounded py-2" href="{% url 'accounts:candidate_profile' %}"><i class="bi bi-person-lines-fill me-2"></i>Profile & Resume</a></li>
+                                <li><a class="dropdown-item rounded-3 py-2 small fw-semibold" href="{% url 'accounts:candidate_dashboard' %}"><i class="bi bi-grid me-2 text-primary"></i>My Dashboard</a></li>
+                                <li><a class="dropdown-item rounded-3 py-2 small fw-semibold" href="{% url 'accounts:candidate_profile' %}"><i class="bi bi-person-lines-fill me-2 text-primary"></i>Profile & Resume</a></li>
                             {% elif request.user.is_employer %}
-                                <li><a class="dropdown-item rounded py-2" href="{% url 'accounts:employer_dashboard' %}"><i class="bi bi-columns-gap me-2"></i>Employer Dashboard</a></li>
-                                <li><a class="dropdown-item rounded py-2" href="{% url 'accounts:employer_applicants' %}"><i class="bi bi-people-fill me-2"></i>Manage Applicants</a></li>
-                                <li><a class="dropdown-item rounded py-2" href="{% url 'accounts:employer_profile' %}"><i class="bi bi-building me-2"></i>Company Profile</a></li>
+                                <li><a class="dropdown-item rounded-3 py-2 small fw-semibold" href="{% url 'accounts:employer_dashboard' %}"><i class="bi bi-kanban me-2 text-primary"></i>Employer Dashboard</a></li>
+                                <li><a class="dropdown-item rounded-3 py-2 small fw-semibold" href="{% url 'accounts:employer_applicants' %}"><i class="bi bi-people me-2 text-primary"></i>Manage Applicants</a></li>
+                                <li><a class="dropdown-item rounded-3 py-2 small fw-semibold" href="{% url 'accounts:employer_profile' %}"><i class="bi bi-building me-2 text-primary"></i>Company Settings</a></li>
                             {% elif request.user.is_platform_admin %}
-                                <li><a class="dropdown-item rounded py-2" href="{% url 'accounts:admin_dashboard' %}"><i class="bi bi-speedometer2 me-2"></i>Admin Dashboard</a></li>
-                                <li><a class="dropdown-item rounded py-2" href="/admin/" target="_blank"><i class="bi bi-gear-wide-connected me-2"></i>Django Admin</a></li>
+                                <li><a class="dropdown-item rounded-3 py-2 small fw-semibold" href="{% url 'accounts:admin_dashboard' %}"><i class="bi bi-shield-check me-2 text-danger"></i>Governance Center</a></li>
+                                <li><a class="dropdown-item rounded-3 py-2 small fw-semibold" href="/admin/" target="_blank"><i class="bi bi-database me-2 text-dark"></i>Django Admin</a></li>
                             {% endif %}
-                            <li><hr class="dropdown-divider"></li>
+                            <li><hr class="dropdown-divider my-1"></li>
                             <li>
-                                <a class="dropdown-item rounded py-2 text-danger" href="{% url 'accounts:logout' %}">
+                                <a class="dropdown-item rounded-3 py-2 small text-danger fw-semibold" href="{% url 'accounts:logout' %}">
                                     <i class="bi bi-box-arrow-right me-2"></i>Sign Out
                                 </a>
                             </li>
                         </ul>
                     </div>
                 {% else %}
-                    <!-- Guest links -->
-                    <a href="{% url 'accounts:login' %}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
-                        <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                    <!-- Guest Links -->
+                    <a href="{% url 'accounts:login' %}" class="btn btn-light btn-pill px-3 shadow-xs">
+                        <i class="bi bi-box-arrow-in-right"></i>Sign In
                     </a>
                     <div class="dropdown">
-                        <button class="btn btn-primary btn-sm rounded-pill px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Register
+                        <button class="btn btn-primary btn-pill px-3 shadow-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Get Started
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2">
+                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-2 rounded-4 mt-2">
                             <li>
-                                <a class="dropdown-item rounded py-2" href="{% url 'accounts:register_candidate' %}">
-                                    <i class="bi bi-person-badge me-2 text-primary"></i>As Job Seeker / Candidate
+                                <a class="dropdown-item rounded-3 py-2" href="{% url 'accounts:register_candidate' %}">
+                                    <div class="fw-bold text-dark small"><i class="bi bi-person-badge text-primary me-2"></i>For Job Seekers</div>
+                                    <div class="text-muted" style="font-size: 0.725rem;">Apply for top engineering roles</div>
                                 </a>
                             </li>
+                            <li><hr class="dropdown-divider my-1"></li>
                             <li>
-                                <a class="dropdown-item rounded py-2" href="{% url 'accounts:register_employer' %}">
-                                    <i class="bi bi-building-add me-2 text-primary"></i>As Employer / Recruiter
+                                <a class="dropdown-item rounded-3 py-2" href="{% url 'accounts:register_employer' %}">
+                                    <div class="fw-bold text-dark small"><i class="bi bi-building-add text-success me-2"></i>For Employers</div>
+                                    <div class="text-muted" style="font-size: 0.725rem;">Post jobs & review applications</div>
                                 </a>
                             </li>
                         </ul>
@@ -148,4 +166,3 @@
         </div>
     </div>
 </nav>
-

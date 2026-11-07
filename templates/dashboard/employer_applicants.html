@@ -1,36 +1,36 @@
 {% extends 'base.html' %}
 
-{% block title %}Manage Applicants | CareerConnect{% endblock %}
+{% block title %}Manage Inbound Applicants | CareerConnect{% endblock %}
 
 {% block content %}
 <div class="container py-4">
     <div class="row g-4">
         <!-- Sidebar Navigation -->
         <div class="col-lg-3">
-            <div class="card p-3 shadow-sm border mb-3">
+            <div class="dashboard-sidebar-nav mb-3">
                 <div class="text-center py-3">
-                    <div class="company-logo-placeholder mx-auto mb-2" style="width: 56px; height: 56px;">
+                    <div class="company-avatar lg mx-auto mb-2">
                         {{ request.user.employer_profile.company.name|slice:":1"|default:"C" }}
                     </div>
                     <h5 class="fw-bold mb-0 text-dark">{{ request.user.employer_profile.company.name|default:"Employer Portal" }}</h5>
-                    <div class="text-muted small">{{ request.user.employer_profile.designation|default:"Recruiter" }}</div>
+                    <div class="text-muted small mt-1">{{ request.user.employer_profile.designation|default:"Recruiter" }}</div>
                     <span class="badge bg-primary-subtle text-primary badge-role mt-2">Employer</span>
                 </div>
 
                 <hr class="my-2">
 
-                <div class="nav flex-column nav-pills mt-2">
+                <div class="nav flex-column gap-1">
                     <a href="{% url 'accounts:employer_dashboard' %}" class="sidebar-link">
-                        <i class="bi bi-columns-gap"></i>Dashboard Overview
+                        <i class="bi bi-kanban"></i>Recruitment Overview
                     </a>
                     <a href="{% url 'jobs:post_job' %}" class="sidebar-link">
                         <i class="bi bi-plus-circle"></i>Post New Job
                     </a>
                     <a href="{% url 'accounts:employer_applicants' %}" class="sidebar-link active">
-                        <i class="bi bi-people"></i>Manage Applicants
+                        <i class="bi bi-people-fill"></i>Manage Applicants
                     </a>
                     <a href="{% url 'accounts:employer_profile' %}" class="sidebar-link">
-                        <i class="bi bi-building"></i>Company Settings
+                        <i class="bi bi-building"></i>Company Branding
                     </a>
                     <a href="{% url 'notifications:list' %}" class="sidebar-link">
                         <i class="bi bi-bell"></i>Notifications
@@ -41,21 +41,23 @@
 
         <!-- Main Column -->
         <div class="col-lg-9">
-            <!-- Header and Filter Bar -->
+            <!-- Header and Filter Toolbar -->
             <div class="card p-4 shadow-sm border mb-4 bg-white">
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
                     <div>
-                        <h4 class="fw-bold text-dark mb-1">Candidate Applications Review</h4>
-                        <div class="text-muted small">Review qualifications, inspect PDF resumes, and update applicant statuses</div>
+                        <span class="badge bg-primary-soft text-primary mb-1">CANDIDATE EVALUATION</span>
+                        <h4 class="fw-bold text-dark mb-1">Applicant Review & Pipeline Management</h4>
+                        <div class="text-muted small">Inspect candidate qualifications, preview PDF resumes, and update hiring statuses.</div>
                     </div>
-                    <span class="badge bg-light text-dark border px-3 py-2">
-                        Total Candidates: <strong>{{ applications.count }}</strong>
+                    <span class="badge bg-light text-dark border px-3 py-2 fs-6">
+                        Total Candidates: <strong class="text-primary">{{ applications.count }}</strong>
                     </span>
                 </div>
 
                 <!-- Filter Controls -->
-                <form method="get" class="row g-2 align-items-center pt-2 border-top">
+                <form method="get" class="row g-2 align-items-center pt-3 border-top">
                     <div class="col-md-5">
+                        <label class="form-label small fw-bold text-muted mb-1">Filter By Posted Vacancy:</label>
                         <select name="job" class="form-select form-select-sm" onchange="this.form.submit()">
                             <option value="">All Posted Jobs</option>
                             {% for j in jobs %}
@@ -67,6 +69,7 @@
                     </div>
 
                     <div class="col-md-5">
+                        <label class="form-label small fw-bold text-muted mb-1">Filter By Application Status:</label>
                         <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
                             <option value="">All Application Statuses</option>
                             {% for scode, slabel in status_choices %}
@@ -77,40 +80,55 @@
                         </select>
                     </div>
 
-                    <div class="col-md-2">
-                        <a href="{% url 'accounts:employer_applicants' %}" class="btn btn-outline-secondary btn-sm w-100">Reset</a>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <a href="{% url 'accounts:employer_applicants' %}" class="btn btn-outline-secondary btn-sm btn-pill w-100 py-1">Reset</a>
                     </div>
                 </form>
             </div>
 
-            <!-- Applicants Cards -->
+            <!-- Candidate Applicant Cards -->
             {% if applications %}
                 <div class="d-flex flex-column gap-3">
                     {% for app in applications %}
-                        <div class="card p-4 shadow-sm border">
+                        <div class="card p-4 shadow-xs border bg-white">
                             <div class="row align-items-center g-3">
+                                <!-- Candidate Info Column -->
                                 <div class="col-md-7">
-                                    <div class="d-flex align-items-start">
-                                        <div class="bg-primary-subtle text-primary rounded-circle p-3 me-3 flex-shrink-0" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
-                                            <i class="bi bi-person-fill fs-4"></i>
+                                    <div class="d-flex align-items-start gap-3">
+                                        <div class="company-avatar bg-primary-subtle text-primary">
+                                            <i class="bi bi-person-fill"></i>
                                         </div>
-                                        <div>
-                                            <h5 class="fw-bold mb-1 text-dark">
-                                                {{ app.candidate.get_full_name|default:app.candidate.username }}
-                                            </h5>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                                                <h5 class="fw-bold mb-0 text-dark">
+                                                    {{ app.candidate.get_full_name|default:app.candidate.username }}
+                                                </h5>
+                                                <span class="badge bg-light text-muted border small">@{{ app.candidate.username }}</span>
+                                            </div>
+
                                             <div class="text-primary small fw-semibold mb-1">
                                                 <i class="bi bi-briefcase me-1"></i>Applied for: {{ app.job.title }}
                                             </div>
-                                            <div class="text-muted small mb-2">
-                                                <i class="bi bi-envelope me-1"></i>{{ app.candidate.email }}
-                                                {% if app.candidate.phone %} &bull; <i class="bi bi-telephone me-1"></i>{{ app.candidate.phone }}{% endif %}
+
+                                            <div class="text-muted small mb-2 d-flex align-items-center gap-2 flex-wrap">
+                                                <span><i class="bi bi-envelope me-1"></i>{{ app.candidate.email }}</span>
+                                                {% if app.candidate.phone %}
+                                                    <span>&bull; <i class="bi bi-telephone me-1"></i>{{ app.candidate.phone }}</span>
+                                                {% endif %}
                                             </div>
 
-                                            <!-- Candidate Qualifications & Skills -->
+                                            <!-- Qualifications & Skills -->
                                             {% if app.candidate.candidate_profile %}
                                                 <div class="small text-secondary mb-2">
-                                                    <strong>Education:</strong> {{ app.candidate.candidate_profile.education_degree|default:"Not specified" }} ({{ app.candidate.candidate_profile.education_institution|default:"" }})
+                                                    <strong>Academics:</strong> {{ app.candidate.candidate_profile.education_degree|default:"Degree not listed" }}
+                                                    {% if app.candidate.candidate_profile.education_institution %}
+                                                        at {{ app.candidate.candidate_profile.education_institution }}
+                                                    {% endif %}
+                                                    {% if app.candidate.candidate_profile.cgpa_or_percentage %}
+                                                        ({{ app.candidate.candidate_profile.cgpa_or_percentage }})
+                                                    {% endif %}
                                                 </div>
+
                                                 <div class="d-flex flex-wrap gap-1 mb-2">
                                                     {% for sk in app.candidate.candidate_profile.get_skills_list %}
                                                         <span class="skill-tag" style="font-size: 0.75rem;">{{ sk }}</span>
@@ -118,45 +136,47 @@
                                                 </div>
                                             {% endif %}
 
+                                            <!-- Cover Letter -->
                                             {% if app.cover_letter %}
-                                                <div class="p-2 bg-light rounded small text-secondary mt-2 border">
-                                                    <strong>Cover Note:</strong> "{{ app.cover_letter }}"
+                                                <div class="p-2 bg-light rounded-3 small text-secondary border mt-2">
+                                                    <strong class="text-dark"><i class="bi bi-chat-left-quote me-1"></i>Cover Note:</strong> "{{ app.cover_letter }}"
                                                 </div>
                                             {% endif %}
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Status Updater & Resume Action -->
+                                <!-- Status Updater & Resume Action Column -->
                                 <div class="col-md-5 border-start-md ps-md-4">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span class="small text-muted">Current Status:</span>
-                                        <span class="badge badge-status-{{ app.status }} px-3 py-1">{{ app.get_status_display }}</span>
+                                        <span class="small fw-bold text-muted">Current Status:</span>
+                                        <span class="badge badge-status-{{ app.status }} px-3 py-1 fs-6">
+                                            {{ app.get_status_display }}
+                                        </span>
                                     </div>
 
-                                    {% if app.resume %}
-                                        <div class="mb-3">
-                                            <a href="{{ app.resume.url }}" target="_blank" class="btn btn-outline-danger btn-sm w-100 fw-semibold">
-                                                <i class="bi bi-file-earmark-pdf-fill me-1"></i>View / Download PDF Resume
+                                    <!-- Resume Preview / Download -->
+                                    <div class="mb-3">
+                                        {% if app.resume %}
+                                            <a href="{{ app.resume.url }}" target="_blank" class="btn btn-outline-danger btn-sm btn-pill w-100 fw-bold">
+                                                <i class="bi bi-file-earmark-pdf-fill me-1"></i>Preview Inbound PDF Resume
                                             </a>
-                                        </div>
-                                    {% elif app.candidate.candidate_profile.resume %}
-                                        <div class="mb-3">
-                                            <a href="{{ app.candidate.candidate_profile.resume.url }}" target="_blank" class="btn btn-outline-danger btn-sm w-100 fw-semibold">
-                                                <i class="bi bi-file-earmark-pdf-fill me-1"></i>View Candidate Profile Resume
+                                        {% elif app.candidate.candidate_profile.resume %}
+                                            <a href="{{ app.candidate.candidate_profile.resume.url }}" target="_blank" class="btn btn-outline-danger btn-sm btn-pill w-100 fw-bold">
+                                                <i class="bi bi-file-earmark-pdf-fill me-1"></i>Preview Profile PDF Resume
                                             </a>
-                                        </div>
-                                    {% else %}
-                                        <div class="text-muted small mb-3 fst-italic">
-                                            <i class="bi bi-info-circle me-1"></i>No resume uploaded.
-                                        </div>
-                                    {% endif %}
+                                        {% else %}
+                                            <div class="alert alert-light border small text-muted py-1 text-center mb-0">
+                                                No PDF resume attached.
+                                            </div>
+                                        {% endif %}
+                                    </div>
 
-                                    <!-- Update Status Form -->
-                                    <div class="p-3 bg-light rounded border">
+                                    <!-- Inline Status Updater Form -->
+                                    <div class="p-3 bg-light rounded-3 border">
                                         <form method="post" action="{% url 'jobs:update_application_status' app.id %}">
                                             {% csrf_token %}
-                                            <label class="form-label small fw-bold text-dark mb-1">Update Candidate Status:</label>
+                                            <label class="form-label small fw-bold text-dark mb-1">Update Status:</label>
                                             <div class="input-group input-group-sm mb-2">
                                                 <select name="status" class="form-select form-select-sm">
                                                     {% for code, label in status_choices %}
@@ -165,14 +185,14 @@
                                                         </option>
                                                     {% endfor %}
                                                 </select>
-                                                <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                                                <button type="submit" class="btn btn-primary btn-sm px-3 fw-bold">Save</button>
                                             </div>
                                             <input type="text" name="notes" class="form-control form-control-sm" placeholder="Feedback / Interview schedule note" value="{{ app.employer_notes|default:'' }}">
                                         </form>
                                     </div>
 
-                                    <div class="text-muted small text-end mt-2">
-                                        Applied on {{ app.applied_at|date:"M d, Y" }}
+                                    <div class="text-muted small text-end mt-2" style="font-size: 0.725rem;">
+                                        Applied on {{ app.applied_at|date:"M d, Y &bull; h:i A" }}
                                     </div>
                                 </div>
                             </div>
@@ -180,14 +200,15 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="card p-5 text-center border shadow-sm">
-                    <i class="bi bi-inbox fs-1 text-muted mb-2"></i>
-                    <h5 class="fw-bold text-dark">No applications found</h5>
-                    <p class="text-muted small mb-0">No candidate submissions match your current filter selection.</p>
+                <div class="card p-5 text-center border-0 shadow-sm bg-white">
+                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 64px; height: 64px;">
+                        <i class="bi bi-inbox fs-2 text-muted"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">No candidate applications found</h5>
+                    <p class="text-muted small mb-0">No submissions match your active filter settings. Try clearing the filter or checking back later.</p>
                 </div>
             {% endif %}
         </div>
     </div>
 </div>
 {% endblock %}
-

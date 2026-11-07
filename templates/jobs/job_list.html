@@ -1,59 +1,100 @@
 {% extends 'base.html' %}
 
-{% block title %}Explore Tech Jobs | CareerConnect{% endblock %}
+{% block title %}Explore Tech Jobs & Opportunities | CareerConnect{% endblock %}
 
 {% block content %}
 <div class="container py-4">
-    <!-- Header banner -->
-    <div class="p-4 rounded-3 bg-white border shadow-sm mb-4">
-        <div class="row align-items-center">
-            <div class="col-md-8">
+    <!-- Header Banner -->
+    <div class="card p-4 border-0 shadow-sm mb-4 bg-white">
+        <div class="row align-items-center justify-content-between g-3">
+            <div class="col-md-7">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb small mb-1">
+                        <li class="breadcrumb-item"><a href="{% url 'jobs:home' %}">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Explore Jobs</li>
+                    </ol>
+                </nav>
                 <h3 class="fw-bold text-dark mb-1">Browse Available Job Openings</h3>
-                <p class="text-muted small mb-0">Showing {{ total_count }} active positions matching your criteria</p>
+                <p class="text-muted small mb-0">
+                    Showing <strong class="text-dark">{{ total_count }}</strong> verified positions matching your preferences
+                </p>
             </div>
-            <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                {% if request.user.is_authenticated and request.user.is_employer %}
-                    <a href="{% url 'jobs:post_job' %}" class="btn btn-primary btn-sm rounded-pill px-3">
-                        <i class="bi bi-plus-circle me-1"></i>Post New Vacancy
-                    </a>
-                {% endif %}
+            <div class="col-md-5 text-md-end">
+                <div class="d-flex align-items-center justify-content-md-end gap-2">
+                    {% if request.user.is_authenticated and request.user.is_employer %}
+                        <a href="{% url 'jobs:post_job' %}" class="btn btn-primary btn-sm btn-pill px-3 shadow-sm">
+                            <i class="bi bi-plus-lg me-1"></i>Post New Vacancy
+                        </a>
+                    {% endif %}
+                    <span class="badge bg-light text-secondary border py-2 px-3">
+                        <i class="bi bi-check2-circle text-success me-1"></i>100% Verified Employers
+                    </span>
+                </div>
             </div>
         </div>
+
+        <!-- Active Filter Chips (if any filter is applied) -->
+        {% if q or loc or skill or emp_type or exp_level or min_sal or remote_only %}
+            <div class="d-flex align-items-center gap-2 flex-wrap pt-3 mt-3 border-top">
+                <span class="small fw-bold text-muted">Active Filters:</span>
+                {% if q %}<span class="badge bg-primary-soft text-primary border border-primary-light">Keyword: {{ q }}</span>{% endif %}
+                {% if loc %}<span class="badge bg-primary-soft text-primary border border-primary-light">Location: {{ loc }}</span>{% endif %}
+                {% if skill %}<span class="badge bg-primary-soft text-primary border border-primary-light">Skill: {{ skill }}</span>{% endif %}
+                {% if emp_type %}<span class="badge bg-primary-soft text-primary border border-primary-light">Type: {{ emp_type }}</span>{% endif %}
+                {% if exp_level %}<span class="badge bg-primary-soft text-primary border border-primary-light">Level: {{ exp_level }}</span>{% endif %}
+                {% if min_sal %}<span class="badge bg-primary-soft text-primary border border-primary-light">Min Salary: ₹{{ min_sal|slice:":2" }}L+</span>{% endif %}
+                {% if remote_only == '1' %}<span class="badge bg-success-soft text-success border border-success-border">Remote Only</span>{% endif %}
+                <a href="{% url 'jobs:job_list' %}" class="small text-danger text-decoration-none ms-2 fw-semibold">
+                    <i class="bi bi-x-circle me-1"></i>Clear all filters
+                </a>
+            </div>
+        {% endif %}
     </div>
 
     <div class="row g-4">
         <!-- Filter Sidebar -->
         <div class="col-lg-3">
-            <div class="card p-4 border shadow-sm sticky-top" style="top: 85px;">
+            <div class="card p-4 border shadow-sm sticky-top" style="top: 85px; z-index: 10;">
                 <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
-                    <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-funnel me-1"></i>Filters</h5>
-                    <a href="{% url 'jobs:job_list' %}" class="small text-decoration-none text-muted">Clear All</a>
+                    <h6 class="fw-bold mb-0 text-dark d-flex align-items-center">
+                        <i class="bi bi-funnel-fill text-primary me-2"></i>Filter Positions
+                    </h6>
+                    <a href="{% url 'jobs:job_list' %}" class="small text-decoration-none text-muted fw-semibold">Reset</a>
                 </div>
 
                 <form method="get" action="{% url 'jobs:job_list' %}">
-                    <!-- Keyword -->
+                    <!-- Keyword Input -->
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold">Keywords</label>
-                        <input type="text" name="q" value="{{ q }}" class="form-control form-control-sm" placeholder="Title, company, or skills">
+                        <label class="form-label small fw-bold">Keywords / Title</label>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" name="q" value="{{ q }}" class="form-control border-start-0" placeholder="Title or company">
+                        </div>
                     </div>
 
-                    <!-- Location -->
+                    <!-- Location Input -->
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold">Location</label>
-                        <input type="text" name="loc" value="{{ loc }}" class="form-control form-control-sm" placeholder="e.g. Bengaluru, Remote">
+                        <label class="form-label small fw-bold">Location</label>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-geo-alt text-muted"></i></span>
+                            <input type="text" name="loc" value="{{ loc }}" class="form-control border-start-0" placeholder="e.g. Bengaluru, Delhi">
+                        </div>
                     </div>
 
-                    <!-- Skills -->
+                    <!-- Skills Filter -->
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold">Skills</label>
-                        <input type="text" name="skill" value="{{ skill }}" class="form-control form-control-sm" placeholder="e.g. Python, React">
+                        <label class="form-label small fw-bold">Specific Skills</label>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-code text-muted"></i></span>
+                            <input type="text" name="skill" value="{{ skill }}" class="form-control border-start-0" placeholder="e.g. Python, React">
+                        </div>
                     </div>
 
                     <!-- Employment Type -->
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold">Employment Type</label>
+                        <label class="form-label small fw-bold">Employment Type</label>
                         <select name="type" class="form-select form-select-sm">
-                            <option value="">All Types</option>
+                            <option value="">All Employment Types</option>
                             {% for code, label in employment_types %}
                                 <option value="{{ code }}" {% if emp_type == code %}selected{% endif %}>{{ label }}</option>
                             {% endfor %}
@@ -62,9 +103,9 @@
 
                     <!-- Experience Level -->
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold">Experience Level</label>
+                        <label class="form-label small fw-bold">Experience Level</label>
                         <select name="exp" class="form-select form-select-sm">
-                            <option value="">All Levels</option>
+                            <option value="">All Experience Levels</option>
                             {% for code, label in experience_levels %}
                                 <option value="{{ code }}" {% if exp_level == code %}selected{% endif %}>{{ label }}</option>
                             {% endfor %}
@@ -73,9 +114,9 @@
 
                     <!-- Min Salary -->
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold">Min Salary (INR / yr)</label>
+                        <label class="form-label small fw-bold">Minimum Annual Salary</label>
                         <select name="min_sal" class="form-select form-select-sm">
-                            <option value="">Any Salary</option>
+                            <option value="">Any Compensation</option>
                             <option value="600000" {% if min_sal == '600000' %}selected{% endif %}>₹6 LPA & above</option>
                             <option value="1000000" {% if min_sal == '1000000' %}selected{% endif %}>₹10 LPA & above</option>
                             <option value="1500000" {% if min_sal == '1500000' %}selected{% endif %}>₹15 LPA & above</option>
@@ -84,66 +125,79 @@
                     </div>
 
                     <!-- Remote Toggle -->
-                    <div class="form-check form-switch mb-3">
-                        <input class="form-check-input" type="checkbox" name="remote" value="1" id="remoteCheck" {% if remote_only == '1' %}checked{% endif %}>
-                        <label class="form-check-label small fw-semibold" for="remoteCheck">Remote Jobs Only</label>
+                    <div class="form-check form-switch mb-4 p-2 bg-light rounded border">
+                        <input class="form-check-input ms-0 me-2" type="checkbox" name="remote" value="1" id="remoteCheck" {% if remote_only == '1' %}checked{% endif %}>
+                        <label class="form-check-label small fw-bold text-dark" for="remoteCheck">Remote Positions Only</label>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-sm w-100 py-2 fw-semibold">
-                        Apply Filters
+                    <button type="submit" class="btn btn-primary btn-sm btn-pill w-100 fw-bold py-2 shadow-sm">
+                        <i class="bi bi-search me-1"></i>Apply Filters
                     </button>
                 </form>
             </div>
         </div>
 
-        <!-- Jobs Listing -->
+        <!-- Jobs Listing Grid -->
         <div class="col-lg-9">
             {% if jobs %}
                 <div class="d-flex flex-column gap-3">
                     {% for job in jobs %}
-                        <div class="card p-4 job-card border">
+                        <div class="job-listing-card shadow-xs {% if job.is_featured %}featured-card{% endif %}">
                             <div class="row align-items-center g-3">
+                                <!-- Details Column -->
                                 <div class="col-md-8">
-                                    <div class="d-flex align-items-start">
-                                        <div class="company-logo-placeholder me-3 flex-shrink-0">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <!-- Company Avatar -->
+                                        <div class="company-avatar">
                                             {{ job.company.name|slice:":1" }}
                                         </div>
-                                        <div>
-                                            <h5 class="fw-bold mb-1">
-                                                <a href="{% url 'jobs:job_detail' job.id %}" class="text-dark text-decoration-none">
-                                                    {{ job.title }}
-                                                </a>
-                                            </h5>
-                                            <div class="text-muted small mb-2">
-                                                <strong class="text-dark">{{ job.company.name }}</strong>
-                                                &bull; <i class="bi bi-geo-alt me-1"></i>{{ job.location }}
-                                                {% if job.is_remote %}
-                                                    <span class="badge bg-success-subtle text-success ms-1">Remote</span>
+
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                                                <h5 class="fw-bold mb-0">
+                                                    <a href="{% url 'jobs:job_detail' job.id %}" class="text-dark text-decoration-none">
+                                                        {{ job.title }}
+                                                    </a>
+                                                </h5>
+                                                {% if job.is_featured %}
+                                                    <span class="badge bg-warning-subtle text-warning small"><i class="bi bi-star-fill me-1"></i>Featured</span>
                                                 {% endif %}
                                             </div>
-                                            <div class="d-flex flex-wrap gap-1 mb-2">
-                                                {% for skill_item in job.get_skills_list|slice:":5" %}
-                                                    <span class="skill-tag">{{ skill_item }}</span>
+
+                                            <div class="text-muted small mb-2 d-flex align-items-center gap-2 flex-wrap">
+                                                <strong class="text-dark">{{ job.company.name }}</strong>
+                                                &bull; <i class="bi bi-geo-alt text-secondary"></i>{{ job.location }}
+                                                {% if job.is_remote %}
+                                                    <span class="badge bg-success-subtle text-success py-1 px-2"><i class="bi bi-laptop me-1"></i>Remote</span>
+                                                {% endif %}
+                                                &bull; <span class="text-muted"><i class="bi bi-clock me-1"></i>{{ job.created_at|timesince }} ago</span>
+                                            </div>
+
+                                            <!-- Skills Chips -->
+                                            <div class="d-flex flex-wrap gap-1">
+                                                {% for sk in job.get_skills_list|slice:":5" %}
+                                                    <span class="skill-tag">{{ sk }}</span>
                                                 {% endfor %}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="col-md-4 text-md-end border-start-md">
+                                <!-- Action / Salary Column -->
+                                <div class="col-md-4 text-md-end border-start-md ps-md-3">
                                     <div class="fw-bold text-dark fs-5 mb-1">
-                                        {{ job.formatted_salary }}
+                                        <i class="bi bi-cash-stack text-success me-1"></i>{{ job.formatted_salary }}
                                     </div>
-                                    <div class="small text-muted mb-2">
-                                        <span class="badge bg-light text-dark border">{{ job.get_employment_type_display }}</span>
-                                        <span class="badge bg-light text-dark border">{{ job.get_experience_level_display }}</span>
+                                    <div class="small text-muted mb-3 d-flex gap-1 justify-content-md-end">
+                                        <span class="badge bg-light text-secondary border">{{ job.get_employment_type_display }}</span>
+                                        <span class="badge bg-light text-secondary border">{{ job.get_experience_level_display }}</span>
                                     </div>
                                     <div class="d-flex gap-2 justify-content-md-end align-items-center">
-                                        <span class="small text-muted me-1">
-                                            <i class="bi bi-clock me-1"></i>{{ job.created_at|timesince }} ago
-                                        </span>
-                                        <a href="{% url 'jobs:job_detail' job.id %}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                                        <a href="{% url 'jobs:job_detail' job.id %}" class="btn btn-outline-secondary btn-sm btn-pill px-3">
                                             View Details
+                                        </a>
+                                        <a href="{% url 'jobs:job_detail' job.id %}" class="btn btn-primary btn-sm btn-pill px-3 shadow-sm">
+                                            Apply Now
                                         </a>
                                     </div>
                                 </div>
@@ -154,45 +208,59 @@
 
                 <!-- Pagination -->
                 {% if page_obj.has_other_pages %}
-                    <nav class="mt-4" aria-label="Page navigation">
-                        <ul class="pagination justify-content-center">
+                    <nav class="mt-4" aria-label="Job listings page navigation">
+                        <ul class="pagination justify-content-center gap-1">
                             {% if page_obj.has_previous %}
                                 <li class="page-item">
-                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if loc %}&loc={{ loc }}{% endif %}{% if type %}&type={{ type }}{% endif %}{% if exp %}&exp={{ exp }}{% endif %}{% if min_sal %}&min_sal={{ min_sal }}{% endif %}">Previous</a>
+                                    <a class="page-link rounded-3" href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if loc %}&loc={{ loc }}{% endif %}{% if type %}&type={{ type }}{% endif %}{% if exp %}&exp={{ exp }}{% endif %}{% if min_sal %}&min_sal={{ min_sal }}{% endif %}{% if remote_only %}&remote={{ remote_only }}{% endif %}">
+                                        <i class="bi bi-chevron-left me-1"></i>Prev
+                                    </a>
                                 </li>
                             {% else %}
-                                <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                                <li class="page-item disabled"><span class="page-link rounded-3 text-muted">Prev</span></li>
                             {% endif %}
 
                             {% for num in page_obj.paginator.page_range %}
                                 {% if page_obj.number == num %}
-                                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                                    <li class="page-item active"><span class="page-link rounded-3 fw-bold">{{ num }}</span></li>
                                 {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                                    <li class="page-item"><a class="page-link" href="?page={{ num }}{% if q %}&q={{ q }}{% endif %}{% if loc %}&loc={{ loc }}{% endif %}{% if type %}&type={{ type }}{% endif %}{% if exp %}&exp={{ exp }}{% endif %}{% if min_sal %}&min_sal={{ min_sal }}{% endif %}">{{ num }}</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link rounded-3" href="?page={{ num }}{% if q %}&q={{ q }}{% endif %}{% if loc %}&loc={{ loc }}{% endif %}{% if type %}&type={{ type }}{% endif %}{% if exp %}&exp={{ exp }}{% endif %}{% if min_sal %}&min_sal={{ min_sal }}{% endif %}{% if remote_only %}&remote={{ remote_only }}{% endif %}">{{ num }}</a>
+                                    </li>
                                 {% endif %}
                             {% endfor %}
 
                             {% if page_obj.has_next %}
                                 <li class="page-item">
-                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if loc %}&loc={{ loc }}{% endif %}{% if type %}&type={{ type }}{% endif %}{% if exp %}&exp={{ exp }}{% endif %}{% if min_sal %}&min_sal={{ min_sal }}{% endif %}">Next</a>
+                                    <a class="page-link rounded-3" href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if loc %}&loc={{ loc }}{% endif %}{% if type %}&type={{ type }}{% endif %}{% if exp %}&exp={{ exp }}{% endif %}{% if min_sal %}&min_sal={{ min_sal }}{% endif %}{% if remote_only %}&remote={{ remote_only }}{% endif %}">
+                                        Next<i class="bi bi-chevron-right ms-1"></i>
+                                    </a>
                                 </li>
                             {% else %}
-                                <li class="page-item disabled"><span class="page-link">Next</span></li>
+                                <li class="page-item disabled"><span class="page-link rounded-3 text-muted">Next</span></li>
                             {% endif %}
                         </ul>
                     </nav>
                 {% endif %}
 
             {% else %}
-                <div class="card p-5 text-center border-0 shadow-sm">
-                    <div class="text-muted mb-3"><i class="bi bi-search fs-1"></i></div>
-                    <h5 class="fw-bold">No jobs matched your filter criteria</h5>
-                    <p class="text-muted small">Try broadening your search keywords, clearing location filters, or checking back soon.</p>
-                    <a href="{% url 'jobs:job_list' %}" class="btn btn-primary btn-sm mx-auto rounded-pill px-4" style="width: fit-content;">Reset All Filters</a>
+                <!-- Empty State -->
+                <div class="card p-5 text-center border-0 shadow-sm bg-white">
+                    <div class="mx-auto mb-3 rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 72px; height: 72px;">
+                        <i class="bi bi-search text-muted fs-2"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">No job openings matched your criteria</h5>
+                    <p class="text-muted small mx-auto mb-4" style="max-width: 480px;">
+                        We couldn't find any positions matching your current search parameters. Try broadening your keywords, removing skill restrictions, or clearing filters.
+                    </p>
+                    <div>
+                        <a href="{% url 'jobs:job_list' %}" class="btn btn-primary btn-pill px-4 shadow-sm">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Reset All Filters
+                        </a>
+                    </div>
                 </div>
             {% endif %}
         </div>
     </div>
 </div>
 {% endblock %}
-

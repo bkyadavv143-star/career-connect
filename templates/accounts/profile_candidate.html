@@ -7,21 +7,21 @@
     <div class="row g-4">
         <!-- Sidebar Navigation -->
         <div class="col-lg-3">
-            <div class="card p-3 shadow-sm border-0 mb-3">
+            <div class="dashboard-sidebar-nav mb-3">
                 <div class="text-center py-3">
-                    <div class="bg-primary-subtle text-primary rounded-circle d-inline-flex p-3 mb-2">
-                        <i class="bi bi-person-bounding-box fs-1"></i>
+                    <div class="company-avatar lg mx-auto mb-2 bg-primary-subtle text-primary">
+                        <i class="bi bi-person-fill"></i>
                     </div>
-                    <h5 class="fw-bold mb-0">{{ request.user.get_full_name|default:request.user.username }}</h5>
-                    <div class="text-muted small">{{ profile.headline|default:"Job Seeker" }}</div>
+                    <h5 class="fw-bold mb-0 text-dark">{{ request.user.get_full_name|default:request.user.username }}</h5>
+                    <div class="text-muted small mt-1 text-truncate px-2">{{ profile.headline|default:"Candidate Profile" }}</div>
                     <span class="badge bg-secondary badge-role mt-2">Candidate</span>
                 </div>
 
                 <hr class="my-2">
 
-                <div class="nav flex-column nav-pills mt-2">
+                <div class="nav flex-column gap-1">
                     <a href="{% url 'accounts:candidate_dashboard' %}" class="sidebar-link">
-                        <i class="bi bi-columns-gap"></i>Dashboard & Applications
+                        <i class="bi bi-grid"></i>My Applications
                     </a>
                     <a href="{% url 'accounts:candidate_profile' %}" class="sidebar-link active">
                         <i class="bi bi-person-lines-fill"></i>Edit Profile & Resume
@@ -36,38 +36,45 @@
             </div>
 
             <!-- Resume Quick Card -->
-            <div class="card p-3 shadow-sm border-0">
-                <h6 class="fw-bold small text-muted text-uppercase mb-2">Active Resume</h6>
+            <div class="card p-3 shadow-sm border bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="fw-bold small text-muted text-uppercase mb-0">Verified Document</h6>
+                    {% if profile.resume %}
+                        <span class="badge bg-success-subtle text-success small">Attached</span>
+                    {% endif %}
+                </div>
+
                 {% if profile.resume %}
-                    <div class="p-2 border rounded bg-light mb-2 d-flex align-items-center">
-                        <i class="bi bi-file-earmark-pdf-fill text-danger fs-3 me-2"></i>
+                    <div class="p-2 border rounded-3 bg-light mb-2 d-flex align-items-center gap-2">
+                        <i class="bi bi-file-earmark-pdf-fill text-danger fs-3"></i>
                         <div class="overflow-hidden">
-                            <div class="small fw-semibold text-truncate">{{ profile.resume.name|cut:'resumes/' }}</div>
-                            <span class="badge bg-success-subtle text-success small">Verified PDF</span>
+                            <div class="small fw-bold text-dark text-truncate">{{ profile.resume.name|cut:'resumes/' }}</div>
+                            <span class="text-muted" style="font-size: 0.7rem;">Verified candidate document</span>
                         </div>
                     </div>
-                    <a href="{{ profile.resume.url }}" target="_blank" class="btn btn-sm btn-outline-primary w-100">
-                        <i class="bi bi-eye me-1"></i>View / Download Resume
+                    <a href="{{ profile.resume.url }}" target="_blank" class="btn btn-sm btn-outline-primary btn-pill w-100">
+                        <i class="bi bi-eye me-1"></i>View / Download PDF
                     </a>
                 {% else %}
-                    <div class="alert alert-warning py-2 px-3 small mb-2">
+                    <div class="alert alert-warning py-2 px-3 small mb-2 rounded-3">
                         <i class="bi bi-exclamation-triangle me-1"></i>No resume uploaded yet.
                     </div>
                 {% endif %}
             </div>
         </div>
 
-        <!-- Main Form -->
+        <!-- Main Profile Form Column -->
         <div class="col-lg-9">
-            <div class="card shadow-sm border-0 p-4">
-                <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+            <div class="card shadow-sm border p-4 bg-white">
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4 flex-wrap gap-2">
                     <div>
-                        <h4 class="fw-bold mb-0">Candidate Profile & Qualifications</h4>
-                        <div class="text-muted small">Keep your details up-to-date so recruiters can discover your profile</div>
+                        <span class="badge bg-primary-soft text-primary mb-1">PROFILE MANAGEMENT</span>
+                        <h4 class="fw-bold text-dark mb-0">Professional Profile & Qualifications</h4>
+                        <div class="text-muted small">Keep your skills and academic records up-to-date so recruiters can discover you</div>
                     </div>
                     {% if profile.resume %}
-                        <a href="{{ profile.resume.url }}" target="_blank" class="btn btn-outline-danger btn-sm">
-                            <i class="bi bi-file-pdf me-1"></i>Preview Resume
+                        <a href="{{ profile.resume.url }}" target="_blank" class="btn btn-outline-danger btn-sm btn-pill px-3">
+                            <i class="bi bi-file-pdf me-1"></i>Preview Active Resume
                         </a>
                     {% endif %}
                 </div>
@@ -75,113 +82,139 @@
                 <form method="post" enctype="multipart/form-data" novalidate>
                     {% csrf_token %}
 
-                    <h6 class="fw-bold text-primary mb-3">1. Personal Information</h6>
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">First Name</label>
-                            {{ form.first_name }}
+                    <!-- 1. Personal & Contact Info -->
+                    <div class="p-3 bg-light rounded-3 border mb-4">
+                        <h6 class="fw-bold text-primary mb-3 d-flex align-items-center">
+                            <i class="bi bi-person-circle me-2"></i>1. Personal & Contact Information
+                        </h6>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">First Name</label>
+                                {{ form.first_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Last Name</label>
+                                {{ form.last_name }}
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Last Name</label>
-                            {{ form.last_name }}
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Email Address</label>
+                                {{ form.email }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Phone Number</label>
+                                {{ form.phone }}
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label">Professional Headline</label>
+                                {{ form.headline }}
+                                <div class="form-text small">e.g. Senior Full-Stack Python Developer | B.Tech CSE</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Current City / Location</label>
+                                {{ form.current_location }}
+                            </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Email</label>
-                            {{ form.email }}
+                    <!-- 2. Academic Background -->
+                    <div class="p-3 bg-light rounded-3 border mb-4">
+                        <h6 class="fw-bold text-primary mb-3 d-flex align-items-center">
+                            <i class="bi bi-mortarboard-fill me-2"></i>2. Education & Academic Background
+                        </h6>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Degree & Branch</label>
+                                {{ form.education_degree }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">College / University Name</label>
+                                {{ form.education_institution }}
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Phone Number</label>
-                            {{ form.phone }}
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Graduation Year</label>
+                                {{ form.graduation_year }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">CGPA or Percentage</label>
+                                {{ form.cgpa_or_percentage }}
+                            </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-8">
-                            <label class="form-label small fw-semibold">Professional Headline</label>
-                            {{ form.headline }}
-                            <div class="form-text small">e.g. Senior Full-Stack Developer | Python, Django, React</div>
+                    <!-- 3. Technical Skills & Experience -->
+                    <div class="p-3 bg-light rounded-3 border mb-4">
+                        <h6 class="fw-bold text-primary mb-3 d-flex align-items-center">
+                            <i class="bi bi-cpu-fill me-2"></i>3. Technical Skills & Experience
+                        </h6>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-8">
+                                <label class="form-label">Key Technical Skills (Comma-separated)</label>
+                                {{ form.skills }}
+                                <div class="form-text small">Example: Python, Django, PostgreSQL, Docker, AWS, React, REST APIs</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Experience (Years)</label>
+                                {{ form.experience_years }}
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label small fw-semibold">Current City / Location</label>
-                            {{ form.current_location }}
+
+                        <div>
+                            <label class="form-label">Professional Summary / Bio</label>
+                            {{ form.bio }}
                         </div>
                     </div>
 
-                    <h6 class="fw-bold text-primary mb-3">2. Education & Academics</h6>
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Degree / Branch</label>
-                            {{ form.education_degree }}
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">College / University Name</label>
-                            {{ form.education_institution }}
-                        </div>
-                    </div>
-
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Graduation Year</label>
-                            {{ form.graduation_year }}
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">CGPA or Percentage</label>
-                            {{ form.cgpa_or_percentage }}
+                    <!-- 4. Portfolio & Profiles -->
+                    <div class="p-3 bg-light rounded-3 border mb-4">
+                        <h6 class="fw-bold text-primary mb-3 d-flex align-items-center">
+                            <i class="bi bi-globe2 me-2"></i>4. Online Presence & Portfolios
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label"><i class="bi bi-github me-1"></i>GitHub Profile</label>
+                                {{ form.github_url }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label"><i class="bi bi-linkedin me-1"></i>LinkedIn Profile</label>
+                                {{ form.linkedin_url }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label"><i class="bi bi-window me-1"></i>Portfolio Website</label>
+                                {{ form.portfolio_url }}
+                            </div>
                         </div>
                     </div>
 
-                    <h6 class="fw-bold text-primary mb-3">3. Skills & Experience</h6>
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-8">
-                            <label class="form-label small fw-semibold">Key Skills (Comma separated)</label>
-                            {{ form.skills }}
-                            <div class="form-text small">Example: Python, Django, PostgreSQL, Docker, AWS, React</div>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label small fw-semibold">Experience (in Years)</label>
-                            {{ form.experience_years }}
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="form-label small fw-semibold">Bio / Professional Summary</label>
-                        {{ form.bio }}
-                    </div>
-
-                    <h6 class="fw-bold text-primary mb-3">4. Portfolio & Profiles</h6>
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-4">
-                            <label class="form-label small fw-semibold"><i class="bi bi-github me-1"></i>GitHub URL</label>
-                            {{ form.github_url }}
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label small fw-semibold"><i class="bi bi-linkedin me-1"></i>LinkedIn Profile</label>
-                            {{ form.linkedin_url }}
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label small fw-semibold"><i class="bi bi-globe me-1"></i>Portfolio Website</label>
-                            {{ form.portfolio_url }}
-                        </div>
-                    </div>
-
-                    <h6 class="fw-bold text-primary mb-3">5. Resume PDF File</h6>
-                    <div class="p-3 border rounded bg-light mb-4">
-                        <label class="form-label small fw-semibold">Upload or Replace Resume (PDF, Max 5MB)</label>
+                    <!-- 5. PDF Resume Upload -->
+                    <div class="p-3 bg-light rounded-3 border mb-4">
+                        <h6 class="fw-bold text-primary mb-3 d-flex align-items-center">
+                            <i class="bi bi-file-earmark-pdf-fill me-2 text-danger"></i>5. Upload / Replace Resume
+                        </h6>
+                        <label class="form-label">Upload PDF Document (Max file size 5MB)</label>
                         {{ form.resume }}
-                        {% if form.resume.errors %}<div class="text-danger small">{{ form.resume.errors.0 }}</div>{% endif %}
+                        {% if form.resume.errors %}<div class="text-danger small mt-1">{{ form.resume.errors.0 }}</div>{% endif %}
+
                         {% if profile.resume %}
-                            <div class="mt-2 small text-success">
-                                <i class="bi bi-check-circle-fill me-1"></i>Current file: <a href="{{ profile.resume.url }}" target="_blank">{{ profile.resume.name|cut:'resumes/' }}</a>
+                            <div class="mt-2 small text-success d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                Current file on record: <a href="{{ profile.resume.url }}" target="_blank" class="ms-1 fw-bold">{{ profile.resume.name|cut:'resumes/' }}</a>
                             </div>
                         {% endif %}
                     </div>
 
-                    <div class="d-flex justify-content-end gap-2">
-                        <a href="{% url 'accounts:candidate_dashboard' %}" class="btn btn-light px-4">Cancel</a>
-                        <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                    <!-- Actions -->
+                    <div class="d-flex justify-content-end gap-2 pt-2">
+                        <a href="{% url 'accounts:candidate_dashboard' %}" class="btn btn-light btn-pill px-4">Cancel</a>
+                        <button type="submit" class="btn btn-primary btn-pill px-4 fw-bold shadow-sm">
                             <i class="bi bi-check2-circle me-1"></i>Save Profile Changes
                         </button>
                     </div>
@@ -191,4 +224,3 @@
     </div>
 </div>
 {% endblock %}
-
